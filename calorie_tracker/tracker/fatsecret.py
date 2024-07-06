@@ -1,32 +1,35 @@
 """
 Create a service to communicate with the FatSecret API.
 """
-
 import requests
-from requests_oauthlib import OAuth1
-from requests_oauthlib import OAuth1Session
+from requests.auth import HTTPBasicAuth
 from django.conf import settings
-import time
-import uuid
 
 class FatSecretAPI:
     BASE_URL = 'https://platform.fatsecret.com/rest/server.api'
+    TOKEN_URL = 'https://oauth.fatsecret.com/connect/token'
 
     def __init__(self):
-        self.consumer_key = settings.FATSECRET_CONSUMER_KEY
-        self.consumer_secret = settings.FATSECRET_CONSUMER_SECRET
+        self.client_id = settings.FATSECRET_CLIENT_ID
+        self.client_secret = settings.FATSECRET_CLIENT_SECRET
+        self.access_token = self.get_access_token()
 
-    def request(self, params):
-        oauth = OAuth1Session(self.consumer_key, client_secret=self.consumer_secret, signature_method='HMAC-SHA1')
-        # params['oauth_signature_method'] = 'HMAC-SHA1'
-        # params['oauth_consumer_key'] = self.consumer_key
-        # params['oauth_nonce'] = uuid.uuid4().hex
-        # params['oauth_timestamp'] = time.time()
+    def get_access_token(self):
+        data = {
+            'grant_type': 'client_credentials',
+        }
+        auth = HTTPBasicAuth(self.client_id, self.client_secret)
+        response = requests.post(self.TOKEN_URL, data=data, auth=auth)
+        response_data = response.json()
+        return response_data['access_token']
 
-        r = oauth.post(self.BASE_URL, data=params)
-        print(r.json())
-
-        return r.json()
+    def request(self, method, params):
+        headers = {
+            'Authorization': f'Bearer {self.access_token}',
+        }
+        response = requests.post(self.BASE_URL, headers=headers, data=params)
+        print(response.json())
+        return response.json()
 
     def search_food(self, query):
         params = {
@@ -34,7 +37,7 @@ class FatSecretAPI:
             'format': 'json',
             'search_expression': query,
         }
-        return self.request(params)
+        return self.request('POST', params)
 
     def get_food(self, food_id):
         params = {
@@ -42,4 +45,4 @@ class FatSecretAPI:
             'format': 'json',
             'food_id': food_id,
         }
-        return self.request(params)
+        return self.request('POST', params)
