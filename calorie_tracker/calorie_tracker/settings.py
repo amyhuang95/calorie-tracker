@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -130,3 +132,12 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# FatSecret API
+
+load_dotenv()
+
+FATSECRET_CONSUMER_KEY = os.getenv('FATSECRET_CONSUMER_KEY')
+FATSECRET_CONSUMER_SECRET = os.getenv('FATSECRET_CONSUMER_SECRET')
+FATSECRET_CLIENT_ID = os.getenv('FATSECRET_CLIENT_ID')
+FATSECRET_CLIENT_SECRET = os.getenv('FATSECRET_CLIENT_SECRET')
