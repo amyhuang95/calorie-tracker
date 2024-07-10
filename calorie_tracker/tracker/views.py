@@ -19,5 +19,6 @@ def food_search(request):
 def food_detail(request, food_id):
     fatsecret = FatSecretAPI()
     food = fatsecret.get_food(food_id).get('food')
-
-    return render(request, 'tracker/food_detail.html', {'food': food})
+    serving = food.get('servings').get('serving')[0]
+    
+    return render(request, 'tracker/food_detail.html', {'food': food, 'serving': serving})

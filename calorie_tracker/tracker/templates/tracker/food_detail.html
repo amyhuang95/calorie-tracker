@@ -1,10 +1,10 @@
 {% extends "tracker/layout.html" %}
 
 {% block body %}
-  <h1>{{ food.food_name }}</h1>
-  <p>Calories: {{ food.servings.serving.calories }}</p>
-  <p>Fat: {{ food.servings.serving.fat }}</p>
-  <p>Carbohydrates: {{ food.servings.serving.carbohydrate }}</p>
-  <p>Protein: {{ food.servings.serving.protein }}</p>
+  <h3>{{ food.food_name }}</h3>
+  <p>Calories: {{ serving.calories }}</p>
+  <p>Fat: {{ serving.fat }}</p>
+  <p>Carbohydrates: {{ serving.carbohydrate }}</p>
+  <p>Protein: {{ serving.protein }}</p>
   <a href="{% url 'food_search' %}">Back to search</a>
 {% endblock %}
