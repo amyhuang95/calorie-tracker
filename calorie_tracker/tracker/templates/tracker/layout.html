@@ -31,8 +31,8 @@
           </ul>
     
           <div class="col-md-3 text-end">
-            <button type="button" class="btn btn-outline-primary me-2">Login</button>
-            <button type="button" class="btn btn-primary">Sign-up</button>
+            <a class="btn btn-outline-primary me-2" href="{% url 'login' %}">Login</a>
+            <a class="btn btn-primary" href="{% url 'signup' %}">Sign-up</a>
           </div>
         </header>
     </div>
@@ -40,7 +40,7 @@
         <h1>Start Managing Your Calories</h1>
         <p>Enter a food to lookup the calories it provides. Create an account to track your dietary pattern.</p>
         <p>
-          <a class="btn btn-primary" href="/docs/5.3/components/navbar/" role="button">Start</a>
+          <a class="btn btn-primary" href="#" role="button">Start</a>
         </p>
         {% block body %}
         {% endblock %}

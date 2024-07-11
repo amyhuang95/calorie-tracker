@@ -33,7 +33,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "users",
     "crispy_forms",
     "crispy_bootstrap4",
     "tracker",
@@ -133,8 +132,9 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Custom user model
-AUTH_USER_MODEL = 'users.CustomUser'
+# User Authentication
+# LOGIN_URL = '/login/'
+# LOGIN_REDIRECT_URL = '/tracker/'
 
 # FatSecret API
 

@@ -46,3 +46,23 @@ class FatSecretAPI:
             'food_id': food_id,
         }
         return self.request('POST', params)
+    
+    def get_food_details(self, food_id):
+        """Returns nutritional information of a food_id as hashmap"""
+        params = {
+            'method': 'food.get',
+            'format': 'json',
+            'food_id': food_id,
+        }
+        response = self.request('POST', params)
+        food = response.get('food')
+        print(food)
+        servings = food.get('servings').get('serving')
+        serving = servings[0] if isinstance(servings, list) else servings # default get the first serving ID
+        return {
+            'name': food['food_name'],
+            'calories': serving['calories'],
+            'fat': serving['fat'],
+            'protein': serving['protein'],
+            'carbohydrate': serving['carbohydrate']
+        }
