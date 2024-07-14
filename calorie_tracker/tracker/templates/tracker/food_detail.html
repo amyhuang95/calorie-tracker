@@ -17,8 +17,8 @@
 <p>Protein: {{ food.protein }}</p>
 
 {% if user.is_authenticated %}
-<form class="p-2 w-25 m-auto" method="post" action="{% url 'save_entry' %}">
-  {{ csrf_token }}
+<form class="p-2 w-25 m-auto" method="post" action="{% url 'food_detail' food.id %}">
+  {% csrf_token %}
     <!-- <input type="text" class="form-control" placeholder="Amount"> -->
     <input type="hidden" name="food_id" value="{{ food.id }}">
     <input type="hidden" name="food_name" value="{{ food.name }}">

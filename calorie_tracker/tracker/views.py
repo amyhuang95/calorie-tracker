@@ -31,10 +31,23 @@ def food_search(request):
 
 def food_detail(request, food_id):
     """Displays details of a food based on the food_id"""
-    fatsecret = FatSecretAPI()
-    food = fatsecret.get_food_details(food_id)
- 
-    return render(request, 'tracker/food_detail.html', {'food': food})
+    if request.method == "GET":
+        fatsecret = FatSecretAPI()
+        food = fatsecret.get_food_details(food_id)
+        return render(request, 'tracker/food_detail.html', {'food': food})
+    else:
+        """Saves food entry to the user"""
+        food_entry = FoodEntry(
+            user = request.user,
+            food_id = request.POST["food_id"],
+            name = request.POST["food_name"],
+            calories = request.POST["calories"],
+            fat = request.POST["fat"],
+            protein = request.POST["protein"],
+            carbohydrates = request.POST["carbohydrate"],
+        )
+        food_entry.save()
+        return HttpResponseRedirect(reverse("food_search")) # could design a JS pop up window
 
 @login_required
 def save_entry(request):
@@ -52,8 +65,9 @@ def save_entry(request):
         food_entry.save()
         food_id = request.POST["food_id"]
         food_name = request.POST["food_name"]
-    return render(request, "tracker/food_detail.html", {"food_id": food_id, 
-                                                        "message": f"{food_name} has been added to your profile"})
+    return HttpResponseRedirect(reverse("food_detail"), 
+                                {"food_id": food_id, 
+                                 "message": f"{food_name} has been added to your profile"})
 
 def login_view(request):
     if request.method == "POST":
