@@ -1,17 +1,41 @@
 {% extends "tracker/layout.html" %}
 
+{% block header %}
+  <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+    <li><a href="{% url 'index' %}" class="nav-link px-2 link-secondary">Home</a></li>
+    <li><a href="#" class="nav-link px-2">About</a></li>
+  </ul>
+{% endblock %}
+
 {% block body %}
-    <h1>Food Search</h1>
-    <form method="get">
-        <input type="text" name="query" placeholder="Search for food...">
-        <button type="submit">Search</button>
+<h1>Food Search</h1>
+
+<div class="w-50 mx-auto">
+    <form class="card p-2" method="post">
+        {% csrf_token %}
+        <div class="input-group">
+            <input type="text" name="query" class="form-control" placeholder="Search for food...">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
     </form>
-    <ul>
-        {% for food in foods %}
-            <li>
-                <a href="{% url 'food_detail' food.food_id %}">{{ food.food_name }}</a>
-            </li>
-        {% endfor %}
-    </ul>
+</div>
+
+<p>
+    {% if query %}
+    Searched: {{ query }}
+    {% endif %}
+</p>
+
+<ul>
+    {% for food in foods %}
+    <div>
+        <a href="{% url 'food_detail' food.food_id %}">{{ food.food_name }}</a>
+    </div>
+    {% empty %}
+    {% if query %}
+    Not found.
+    {% endif %}
+    {% endfor %}
+</ul>
 
 {% endblock %}

@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 class FoodEntry(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    food_id = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     calories = models.DecimalField(max_digits=6, decimal_places=2)
     fat = models.DecimalField(max_digits=6, decimal_places=2)

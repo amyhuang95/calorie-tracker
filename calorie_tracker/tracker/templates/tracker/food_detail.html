@@ -1,10 +1,40 @@
 {% extends "tracker/layout.html" %}
 
+{% block header %}
+<ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+  <li><a href="{% url 'index' %}" class="nav-link px-2 link-secondary">Home</a></li>
+  <li><a href="{% url 'food_search' %}" class="nav-link px-2 link-secondary">Search</a></li>
+  <li><a href="#" class="nav-link px-2">About</a></li>
+</ul>
+{% endblock %}
+
 {% block body %}
-  <h3>{{ food.name }}</h3>
-  <p>Calories: {{ food.calories }}</p>
-  <p>Fat: {{ food.fat }}</p>
-  <p>Carbohydrates: {{ food.carbohydrate }}</p>
-  <p>Protein: {{ food.protein }}</p>
-  <a href="{% url 'food_search' %}">Back to search</a>
+<h3>{{ food.name }}</h3>
+<br>
+<p>Calories: {{ food.calories }}</p>
+<p>Fat: {{ food.fat }}</p>
+<p>Carbohydrates: {{ food.carbohydrate }}</p>
+<p>Protein: {{ food.protein }}</p>
+
+{% if user.is_authenticated %}
+<form class="p-2 w-25 m-auto" method="post" action="{% url 'save_entry' %}">
+  {{ csrf_token }}
+    <!-- <input type="text" class="form-control" placeholder="Amount"> -->
+    <input type="hidden" name="food_id" value="{{ food.id }}">
+    <input type="hidden" name="food_name" value="{{ food.name }}">
+    <input type="hidden" name="calories" value="{{ food.calories }}">
+    <input type="hidden" name="fat" value="{{ food.fat }}">
+    <input type="hidden" name="carbohydrate" value="{{ food.carbohydrate }}">
+    <input type="hidden" name="protein" value="{{ food.protein }}">
+    <button type="submit" class="btn btn-primary w-70 mb-2">Save to my profile</button>
+</form>
+{% endif %}
+
+{% if message %}
+<div>
+  {{ message }}
+</div>
+{% endif %}
+
+<a href="{% url 'food_search' %}">Back to search</a>
 {% endblock %}

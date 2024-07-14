@@ -60,6 +60,7 @@ class FatSecretAPI:
         servings = food.get('servings').get('serving')
         serving = servings[0] if isinstance(servings, list) else servings # default get the first serving ID
         return {
+            'id': food_id,
             'name': food['food_name'],
             'calories': serving['calories'],
             'fat': serving['fat'],
