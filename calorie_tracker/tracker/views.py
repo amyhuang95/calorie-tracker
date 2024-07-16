@@ -1,12 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from datetime import timedelta
 from .fatsecret import FatSecretAPI
-from .forms import *
 from .models import *
 
 
@@ -49,25 +49,6 @@ def food_detail(request, food_id):
         food_entry.save()
         return HttpResponseRedirect(reverse("food_search")) # could design a JS pop up window
 
-@login_required
-def save_entry(request):
-    """Saves food entry to the user"""
-    if request.method == "POST":
-        food_entry = FoodEntry(
-            user = request.user,
-            food_id = request.POST["food_id"],
-            name = request.POST["food_name"],
-            calories = request.POST["calories"],
-            fat = request.POST["fat"],
-            protein = request.POST["protein"],
-            carbohydrates = request.POST["carbohydrate"],
-        )
-        food_entry.save()
-        food_id = request.POST["food_id"]
-        food_name = request.POST["food_name"]
-    return HttpResponseRedirect(reverse("food_detail"), 
-                                {"food_id": food_id, 
-                                 "message": f"{food_name} has been added to your profile"})
 
 def login_view(request):
     if request.method == "POST":
@@ -119,3 +100,43 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "tracker/register.html")
+    
+@login_required
+def save_entry(request):
+    """Saves food entry to the user"""
+    if request.method == "POST":
+        food_entry = FoodEntry(
+            user = request.user,
+            food_id = request.POST["food_id"],
+            name = request.POST["food_name"],
+            calories = request.POST["calories"],
+            fat = request.POST["fat"],
+            protein = request.POST["protein"],
+            carbohydrates = request.POST["carbohydrate"],
+        )
+        food_entry.save()
+        food_id = request.POST["food_id"]
+        food_name = request.POST["food_name"]
+    return HttpResponseRedirect(reverse("food_detail"), 
+                                {"food_id": food_id, 
+                                 "message": f"{food_name} has been added to your profile"})
+
+@login_required
+def my_profile(request):
+    # Get the user's calorie data in a week
+    today = timezone.now().date() - timedelta(days=1) # adjust for naive timezone
+    past_week = today - timedelta(days=7)
+    weekly_entries = FoodEntry.objects.filter(user=request.user, date__gte=past_week)
+    weekly_entries.order_by('-date')
+
+    # Calculate remaining calories for today
+    goal = 2000
+    today_entries = FoodEntry.objects.filter(user=request.user, date=today)
+    today_calories = sum(float(entry.calories) for entry in today_entries)
+    remaining_calories = goal - today_calories
+    
+    return render(request, "tracker/my_profile.html", {
+        'weekly_entries': weekly_entries,
+        'remaining_calories': remaining_calories,
+        'goal': goal,
+    })

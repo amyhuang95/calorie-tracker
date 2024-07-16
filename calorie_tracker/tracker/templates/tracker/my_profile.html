@@ -1,0 +1,35 @@
+{% extends "tracker/layout.html" %}
+
+{% block body %}
+
+<div>
+    <h1>Weekly Calorie Tracker</h1>
+    <h2>Remaining Calories for Today: {{ remaining_calories }} / {{ goal }}</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Food Name</th>
+                <th>Calories</th>
+                <th>Fat</th>
+                <th>Protein</th>
+                <th>Carbohydrates</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in weekly_entries %}
+                <tr>
+                    <td>{{ entry.date }}</td>
+                    <td>{{ entry.name }}</td>
+                    <td>{{ entry.calories }}</td>
+                    <td>{{ entry.fat }}</td>
+                    <td>{{ entry.protein }}</td>
+                    <td>{{ entry.carbohydrates }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
