@@ -4,10 +4,13 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.utils import timezone
 from datetime import timedelta
 from .fatsecret import FatSecretAPI
 from .models import *
+import json
+from django.http import JsonResponse
 
 
 def index(request):
@@ -35,19 +38,20 @@ def food_detail(request, food_id):
         fatsecret = FatSecretAPI()
         food = fatsecret.get_food_details(food_id)
         return render(request, 'tracker/food_detail.html', {'food': food})
-    else:
-        """Saves food entry to the user"""
-        food_entry = FoodEntry(
-            user = request.user,
-            food_id = request.POST["food_id"],
-            name = request.POST["food_name"],
-            calories = request.POST["calories"],
-            fat = request.POST["fat"],
-            protein = request.POST["protein"],
-            carbohydrates = request.POST["carbohydrate"],
-        )
-        food_entry.save()
-        return HttpResponseRedirect(reverse("food_search")) # could design a JS pop up window
+    return save_entry(request)
+    # else:
+    #     """Saves food entry to the user"""
+    #     food_entry = FoodEntry(
+    #         user = request.user,
+    #         food_id = request.POST["food_id"],
+    #         name = request.POST["food_name"],
+    #         calories = request.POST["calories"],
+    #         fat = request.POST["fat"],
+    #         protein = request.POST["protein"],
+    #         carbohydrates = request.POST["carbohydrate"],
+    #     )
+    #     food_entry.save()
+    #     return HttpResponseRedirect(reverse("food_search")) # could design a JS pop up window
 
 
 def login_view(request):
@@ -104,22 +108,28 @@ def register(request):
 @login_required
 def save_entry(request):
     """Saves food entry to the user"""
-    if request.method == "POST":
+    if request.method == 'POST':
+        data = json.loads(request.body)
         food_entry = FoodEntry(
-            user = request.user,
-            food_id = request.POST["food_id"],
-            name = request.POST["food_name"],
-            calories = request.POST["calories"],
-            fat = request.POST["fat"],
-            protein = request.POST["protein"],
-            carbohydrates = request.POST["carbohydrate"],
+            user=request.user,
+            food_id=data["food_id"],
+            name=data["food_name"],
+            calories=data["calories"],
+            fat=data["fat"],
+            protein=data["protein"],
+            carbohydrates=data["carbohydrates"],
+            date=timezone.now()  # Assuming you want to save with the current date
         )
         food_entry.save()
-        food_id = request.POST["food_id"]
-        food_name = request.POST["food_name"]
-    return HttpResponseRedirect(reverse("food_detail"), 
-                                {"food_id": food_id, 
-                                 "message": f"{food_name} has been added to your profile"})
+        return JsonResponse({
+            'status': 'success',
+            'message': f"{data['food_name']} has been added to your profile"
+        })
+    else:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Invalid request method'
+        }, status=400)
 
 @login_required
 def my_profile(request):

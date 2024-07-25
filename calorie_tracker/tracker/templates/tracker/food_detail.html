@@ -1,41 +1,37 @@
 {% extends "tracker/layout.html" %}
-
+{% load static %}
 {% block body %}
-<h3>{{ food.name }}</h3>
+<h3 id="f_name">{{ food.name }}</h3>
+<div id="f_id" style="display:none">{{ food.id }}</div>
 <br>
-<p>Calories: {{ food.calories }}</p>
-<p>Fat: {{ food.fat }}</p>
-<p>Carbohydrates: {{ food.carbohydrate }}</p>
-<p>Protein: {{ food.protein }}</p>
+
+<div id="f_calories">Calories: {{ food.calories }}</div>
+<div id="f_fat">Fat: {{ food.fat }}</div>
+<div id="f_carbs">Carbohydrates: {{ food.carbohydrate }}</div>
+<div id="f_protein">Protein: {{ food.protein }}</div>
+
+<form class="p-2 w-25 m-auto" id="servings-form">
+  {% csrf_token %}
+  <div>
+    <label for="amount">Servings:</label>
+    <input type="number" class="w-50 mb-2" name="amount" id="amount" min="1" placeholder="Serving(s)">
+    <button type="submit" class="btn btn-secondary" name="calculate">Calculate</button>
+  </div>
+</form>
 
 <div>
   <a href="{% url 'food_search' %}">Back to search</a>
 </div>
 
 {% if user.is_authenticated %}
-<form class="p-2 w-25 m-auto" method="post" action="{% url 'food_detail' food.id %}">
-  {% csrf_token %}
-    <!-- <input type="text" class="form-control" placeholder="Amount"> -->
-    <input type="hidden" name="food_id" value="{{ food.id }}">
-    <input type="hidden" name="food_name" value="{{ food.name }}">
-    <input type="hidden" name="calories" value="{{ food.calories }}">
-    <input type="hidden" name="fat" value="{{ food.fat }}">
-    <input type="hidden" name="carbohydrate" value="{{ food.carbohydrate }}">
-    <input type="hidden" name="protein" value="{{ food.protein }}">
-    <button type="submit" class="btn btn-primary w-70 mb-2">Save to my profile</button>
-</form>
+<button id="save-entry" class="btn btn-primary w-70 mb-2">Save to my profile</button>
 {% else %}
 <div class="mt-5 mb-3 text-body-secondary">
   <a href="{% url 'register' %}">Create an account</a> to save your calories.
 </div>
 {% endif %}
 
-{% if message %}
-<div>
-  {{ message }}
-</div>
-{% endif %}
+<div id="message"></div>
 
-
-
+<script src="{% static 'tracker/food_detail.js' %}"></script>
 {% endblock %}
