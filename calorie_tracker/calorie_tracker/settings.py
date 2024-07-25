@@ -132,10 +132,6 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# User Authentication
-# LOGIN_URL = '/login/'
-# LOGIN_REDIRECT_URL = '/tracker/'
-
 # FatSecret API
 
 load_dotenv()
