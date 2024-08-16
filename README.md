@@ -25,7 +25,7 @@ This project is a nutrition tracking web application built using Django and FatS
    ```
    pip install -r requirements.txt
    ```
-5. FatSecret API requires access token to use. Please refer to [documentation](https://platform.fatsecret.com/docs/guides/authentication/oauth2). After obtaining Fatsecret API credentials, create a `.env` file in the root directory and include below:
+5. FatSecret API requires access token to use. Please refer to the [documentation](https://platform.fatsecret.com/docs/guides/authentication/oauth2). After obtaining Fatsecret API credentials, create a `.env` file in the root directory and include below:
    ```
    FATSECRET_CLIENT_ID="YOUR CLIENT ID"
    FATSECRET_CLIENT_SECRET="YOUR CLIENT SECRET"
